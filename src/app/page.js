@@ -11,6 +11,26 @@ import { WOLFX_WS_URL, parseWolfxMessage, fetchEarthquakeList } from '@/lib/wolf
 import { fetchTsunamiInfo } from '@/lib/p2p';
 import { Radio, Wifi, WifiOff } from 'lucide-react';
 
+const ClientTime = () => {
+  const [time, setTime] = useState('');
+  useEffect(() => {
+    const update = () => {
+      const now = new Date();
+      setTime(now.toLocaleTimeString('ja-JP', {
+        timeZone: 'Asia/Tokyo',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }) + ' JST');
+    };
+    update();
+    const timer = setInterval(update, 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return <>{time}</>;
+};
+
 // Dynamically import map to avoid SSR issues with Leaflet
 const EarthquakeMap = dynamic(() => import('@/components/EarthquakeMap'), {
   ssr: false,
@@ -137,7 +157,7 @@ export default function Home() {
             </div>
             <Separator orientation="vertical" className="h-4" />
             <div className="text-[10px] text-gray-400 font-mono">
-              {new Date().toLocaleTimeString()}
+              <ClientTime />
             </div>
           </div>
         </header>

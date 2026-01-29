@@ -6,17 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { History, MapPin } from 'lucide-react';
+import { getJMAIntensityTailwind } from '@/lib/utils';
 
 export default function EarthquakeHistory({ history = [] }) {
-  const getIntensityColor = (intensity) => {
-    if (!intensity) return 'bg-gray-400';
-    if (intensity.includes('7')) return 'bg-red-700';
-    if (intensity.includes('6')) return 'bg-red-600';
-    if (intensity.includes('5')) return 'bg-orange-500';
-    if (intensity.includes('4')) return 'bg-yellow-500';
-    return 'bg-blue-500';
-  };
-
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
@@ -44,7 +36,7 @@ export default function EarthquakeHistory({ history = [] }) {
                       <MapPin size={10} /> {eq.reportTime || eq.originTime}
                     </div>
                   </div>
-                  <Badge className={`${getIntensityColor(eq.maxIntensity)} text-white font-bold`}>
+                  <Badge className={`${getJMAIntensityTailwind(eq.maxIntensity)} text-white font-bold border-none`}>
                     震度 {eq.maxIntensity}
                   </Badge>
                 </div>

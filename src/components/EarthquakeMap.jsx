@@ -2,9 +2,10 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, CircleMarker } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { getJMAIntensityColor } from '@/lib/utils';
 
 // Fix for default marker icons in Leaflet with React
 const fixLeafletIcon = () => {
@@ -50,19 +51,29 @@ export default function EarthquakeMap({ earthquakes = [], center = [35.6895, 139
           const lng = parseFloat(eq.longitude);
           if (isNaN(lat) || isNaN(lng)) return null;
 
+          const color = getJMAIntensityColor(eq.maxIntensity);
+
           return (
-            <Marker
-              key={eq.id || idx}
-              position={[lat, lng]}
-            >
-              <Popup>
-                <div className="text-sm">
-                  <p className="font-bold">{eq.hypocenter}</p>
-                  <p>M{eq.magnitude} / 震度{eq.maxIntensity}</p>
-                  <p className="text-xs text-gray-500">{eq.originTime || eq.reportTime}</p>
-                </div>
-              </Popup>
-            </Marker>
+            <React.Fragment key={eq.id || idx}>
+              <CircleMarker
+                center={[lat, lng]}
+                radius={8}
+                pathOptions={{
+                  fillColor: color,
+                  fillOpacity: 0.8,
+                  color: '#fff',
+                  weight: 2
+                }}
+              >
+                <Popup>
+                  <div className="text-sm">
+                    <p className="font-bold">{eq.hypocenter}</p>
+                    <p>M{eq.magnitude} / 震度{eq.maxIntensity}</p>
+                    <p className="text-xs text-gray-500">{eq.originTime || eq.reportTime}</p>
+                  </div>
+                </Popup>
+              </CircleMarker>
+            </React.Fragment>
           );
         })}
         <MapUpdater center={center} />
